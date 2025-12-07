@@ -1,8 +1,4 @@
-// ============================================
-// FILE: lib/models/rescue_request.dart
-// ============================================
-import 'package:latlong2/latlong.dart';
-
+// models/rescue_request.dart
 class RescueRequest {
   final String name;
   final String contactPhone;
@@ -15,7 +11,9 @@ class RescueRequest {
   final double longitude;
   final List<String> conditions;
   final String? description;
-  final List<MediaFile> media;
+  final List<String> media;
+  final DateTime requestTime;
+  final String status; // "pending", "in_progress", "resolved", "cancelled"
 
   RescueRequest({
     required this.name,
@@ -27,10 +25,31 @@ class RescueRequest {
     required this.address,
     required this.latitude,
     required this.longitude,
-    this.conditions = const [],
+    required this.conditions,
     this.description,
-    this.media = const [],
+    required this.media,
+    required this.requestTime,
+    required this.status,
   });
+
+  factory RescueRequest.fromJson(Map<String, dynamic> json) {
+    return RescueRequest(
+      name: json['name'],
+      contactPhone: json['contact_phone'],
+      code: json['code'],
+      adults: json['adults'] ?? 0,
+      children: json['children'] ?? 0,
+      elderly: json['elderly'] ?? 0,
+      address: json['address'],
+      latitude: json['latitude'],
+      longitude: json['longitude'],
+      conditions: List<String>.from(json['conditions']),
+      description: json['description'],
+      media: List<String>.from(json['media']),
+      requestTime: DateTime.parse(json['request_time']),
+      status: json['status'],
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -45,19 +64,9 @@ class RescueRequest {
       'longitude': longitude,
       'conditions': conditions,
       'description': description,
-      'media': media.map((m) => m.toJson()).toList(),
+      'media': media,
+      'request_time': requestTime.toIso8601String(),
+      'status': status,
     };
-  }
-}
-
-class MediaFile {
-  final String type;
-  final String data;
-  final String name;
-
-  MediaFile({required this.type, required this.data, required this.name});
-
-  Map<String, dynamic> toJson() {
-    return {'type': type, 'data': data, 'name': name};
   }
 }

@@ -6,6 +6,8 @@
 	<string>Ứng dụng cần truy cập vị trí để hiển thị bản đồ</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Ứng dụng cần truy cập vị trí</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need photo library access to attach images</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
