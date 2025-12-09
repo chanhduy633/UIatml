@@ -1,4 +1,4 @@
-// screens/sos_form_screen.dart
+// screens/sos_form_screen.dart - Vietnamese version
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/rescue_request.dart';
@@ -37,18 +37,18 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
   bool _isSubmitting = false;
 
   final List<String> _availableConditions = [
-    'Medical Emergency',
-    'Chest Pain',
-    'Fall',
-    'Unable to move',
-    'Vehicle Accident',
-    'Multiple Injuries',
-    'Fire',
-    'Trapped',
-    'Breathing Difficulty',
-    'Unconscious',
-    'Bleeding',
-    'Other',
+    'Cấp cứu y tế',
+    'Đau ngực',
+    'Té ngã',
+    'Không thể di chuyển',
+    'Tai nạn giao thông',
+    'Nhiều người bị thương',
+    'Hỏa hoạn',
+    'Bị mắc kẹt',
+    'Khó thở',
+    'Bất tỉnh',
+    'Chảy máu',
+    'Khác',
   ];
 
   @override
@@ -71,21 +71,14 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
 
     try {
       final location = await LocationService.getCurrentLocation();
-      final lat = location['latitude'];
-      final lng = location['longitude'];
-
-      if (lat == null || lng == null) {
-        throw Exception('Location data is null');
-      }
-
       final address = await GeocodingService.getAddressFromCoordinates(
-        lat,
-        lng,
+        location['latitude']!,
+        location['longitude']!,
       );
 
       setState(() {
-        _latitude = lat;
-        _longitude = lng;
+        _latitude = location['latitude'];
+        _longitude = location['longitude'];
         _address = address;
         _isLoadingLocation = false;
       });
@@ -93,7 +86,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
       setState(() => _isLoadingLocation = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not get location: $e')),
+          SnackBar(content: Text('Không thể lấy vị trí: $e')),
         );
       }
     }
@@ -123,14 +116,14 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
 
     if (_selectedConditions.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one condition')),
+        const SnackBar(content: Text('Vui lòng chọn ít nhất một tình trạng')),
       );
       return;
     }
 
     if (_latitude == null || _longitude == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Location is required')),
+        const SnackBar(content: Text('Vị trí là bắt buộc')),
       );
       return;
     }
@@ -138,11 +131,9 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
     setState(() => _isSubmitting = true);
 
     try {
-      // Generate request code
       final code =
           ProvinceService.generateCode(_selectedProvince ?? 'TP. Hồ Chí Minh');
 
-      // Create new request
       final newRequest = RescueRequest(
         name: _nameController.text.trim(),
         contactPhone: _phoneController.text.trim(),
@@ -150,7 +141,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
         adults: _adults,
         children: _children,
         elderly: _elderly,
-        address: _address ?? 'Unknown location',
+        address: _address ?? 'Vị trí không xác định',
         latitude: _latitude!,
         longitude: _longitude!,
         conditions: _selectedConditions,
@@ -160,13 +151,11 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
         status: 'pending',
       );
 
-      // Save request
       await RequestService.createRequest(newRequest);
 
       setState(() => _isSubmitting = false);
 
       if (mounted) {
-        // Show success dialog
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -180,7 +169,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
                 Icon(Icons.check_circle, color: Colors.green, size: 32),
                 SizedBox(width: 12),
                 Text(
-                  'SOS Sent!',
+                  'Đã gửi SOS!',
                   style: TextStyle(color: Colors.white),
                 ),
               ],
@@ -190,7 +179,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Your emergency request has been sent successfully.',
+                  'Yêu cầu cứu hộ của bạn đã được gửi thành công.',
                   style: TextStyle(color: Colors.white70),
                 ),
                 const SizedBox(height: 16),
@@ -204,7 +193,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Request Code:',
+                        'Mã yêu cầu:',
                         style: TextStyle(
                           color: Colors.white60,
                           fontSize: 12,
@@ -224,7 +213,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  'Help is on the way. Please stay calm and keep your phone nearby.',
+                  'Đội cứu hộ đang trên đường đến. Vui lòng giữ bình tĩnh và để điện thoại ở gần.',
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 14,
@@ -235,11 +224,11 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close dialog
-                  Navigator.of(context).pop(); // Close form
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
                 child: const Text(
-                  'OK',
+                  'Đồng ý',
                   style: TextStyle(color: Colors.red, fontSize: 16),
                 ),
               ),
@@ -251,7 +240,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
       setState(() => _isSubmitting = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('Lỗi: $e')),
         );
       }
     }
@@ -262,7 +251,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF1A0F0F),
       appBar: AppBar(
-        title: const Text('Emergency SOS Request'),
+        title: const Text('Yêu cầu cứu hộ khẩn cấp'),
         backgroundColor: Colors.red,
       ),
       body: Form(
@@ -285,7 +274,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
                   SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Fill in details for emergency assistance',
+                      'Điền thông tin để nhận hỗ trợ khẩn cấp',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -300,7 +289,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
 
             // Contact Information Section
             const Text(
-              'Contact Information',
+              'Thông tin liên hệ',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -311,11 +300,11 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
 
             _buildTextField(
               controller: _nameController,
-              label: 'Full Name',
+              label: 'Họ và tên',
               icon: Icons.person,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Please enter your name';
+                  return 'Vui lòng nhập họ tên';
                 }
                 return null;
               },
@@ -324,26 +313,25 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
 
             _buildTextField(
               controller: _phoneController,
-              label: 'Phone Number',
+              label: 'Số điện thoại',
               icon: Icons.phone,
               keyboardType: TextInputType.phone,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Please enter your phone number';
+                  return 'Vui lòng nhập số điện thoại';
                 }
                 return null;
               },
             ),
             const SizedBox(height: 12),
 
-            // Province Selection
             _buildProvinceDropdown(),
 
             const SizedBox(height: 24),
 
             // People Count Section
             const Text(
-              'Number of People Involved',
+              'Số người cần cứu hộ',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -355,15 +343,15 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
             Row(
               children: [
                 Expanded(
-                    child: _buildCounterCard('Adults', _adults,
+                    child: _buildCounterCard('Người lớn', _adults,
                         (val) => setState(() => _adults = val))),
                 const SizedBox(width: 8),
                 Expanded(
-                    child: _buildCounterCard('Children', _children,
+                    child: _buildCounterCard('Trẻ em', _children,
                         (val) => setState(() => _children = val))),
                 const SizedBox(width: 8),
                 Expanded(
-                    child: _buildCounterCard('Elderly', _elderly,
+                    child: _buildCounterCard('Người cao tuổi', _elderly,
                         (val) => setState(() => _elderly = val))),
               ],
             ),
@@ -372,7 +360,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
 
             // Emergency Conditions Section
             const Text(
-              'Emergency Conditions',
+              'Tình trạng khẩn cấp',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -412,7 +400,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
 
             // Description Section
             const Text(
-              'Additional Details',
+              'Thông tin bổ sung',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -426,7 +414,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
               maxLines: 4,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                hintText: 'Describe the emergency situation...',
+                hintText: 'Mô tả tình trạng khẩn cấp...',
                 hintStyle: const TextStyle(color: Colors.white38),
                 filled: true,
                 fillColor: const Color(0xFF2A1F1F),
@@ -441,7 +429,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
 
             // Location Section
             const Text(
-              'Location',
+              'Vị trí',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -466,8 +454,8 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
                       Expanded(
                         child: Text(
                           _isLoadingLocation
-                              ? 'Getting your location...'
-                              : _address ?? 'Location not available',
+                              ? 'Đang lấy vị trí của bạn...'
+                              : _address ?? 'Vị trí không khả dụng',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,
@@ -490,7 +478,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
                   TextButton.icon(
                     onPressed: _isLoadingLocation ? null : _getCurrentLocation,
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Refresh Location'),
+                    label: const Text('Làm mới vị trí'),
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.red,
                     ),
@@ -503,7 +491,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
 
             // Media Upload Section
             const Text(
-              'Photos/Videos (Optional)',
+              'Ảnh/Video (Không bắt buộc)',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -528,7 +516,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
                       ),
                       child: Stack(
                         children: [
-                          Center(
+                          const Center(
                             child: Icon(
                               Icons.image,
                               color: Colors.white54,
@@ -555,7 +543,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
             OutlinedButton.icon(
               onPressed: _pickImage,
               icon: const Icon(Icons.add_photo_alternate),
-              label: const Text('Add Photo/Video'),
+              label: const Text('Thêm ảnh/video'),
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.white,
                 side: const BorderSide(color: Colors.white54),
@@ -583,7 +571,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
                 child: _isSubmitting
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text(
-                        'SEND SOS REQUEST',
+                        'GỬI YÊU CẦU CỨU HỘ',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -631,7 +619,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
       dropdownColor: const Color(0xFF2A1F1F),
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
-        labelText: 'Province/City',
+        labelText: 'Tỉnh/Thành phố',
         labelStyle: const TextStyle(color: Colors.white70),
         prefixIcon: const Icon(Icons.location_city, color: Colors.white70),
         filled: true,
@@ -668,6 +656,7 @@ class _SOSFormScreenState extends State<SOSFormScreen> {
               color: Colors.white70,
               fontSize: 12,
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Row(

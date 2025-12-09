@@ -18,7 +18,10 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     Future.delayed(const Duration(seconds: 1), () {
-      AuthService.login(_usernameController.text, _passwordController.text);
+      AuthService.login(
+        _usernameController.text,
+        _passwordController.text,
+      );
 
       final user = AuthService.getCurrentUser();
       if (user != null) {
@@ -29,9 +32,10 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } else {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Invalid credentials')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Tên đăng nhập hoặc mật khẩu không đúng')),
+        );
       }
     });
   }
@@ -51,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   width: 120,
                   height: 120,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.red,
                     shape: BoxShape.circle,
                   ),
@@ -65,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Title
                 const Text(
-                  'Emergency SOS',
+                  'Cứu Hộ Khẩn Cấp',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -74,8 +78,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Login to continue',
-                  style: TextStyle(fontSize: 16, color: Colors.white70),
+                  'Đăng nhập để tiếp tục',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white70,
+                  ),
                 ),
                 const SizedBox(height: 48),
 
@@ -84,9 +91,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _usernameController,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    labelText: 'Username',
+                    labelText: 'Tên đăng nhập',
                     labelStyle: const TextStyle(color: Colors.white70),
-                    hintText: 'user or rescue',
+                    hintText: 'user hoặc rescue',
                     hintStyle: const TextStyle(color: Colors.white38),
                     prefixIcon: const Icon(Icons.person, color: Colors.white70),
                     filled: true,
@@ -105,9 +112,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: true,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: 'Mật khẩu',
                     labelStyle: const TextStyle(color: Colors.white70),
-                    hintText: 'user123 or rescue123',
+                    hintText: 'user123 hoặc rescue123',
                     hintStyle: const TextStyle(color: Colors.white38),
                     prefixIcon: const Icon(Icons.lock, color: Colors.white70),
                     filled: true,
@@ -136,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: _isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
-                            'Login',
+                            'Đăng nhập',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -156,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Column(
                     children: [
                       Text(
-                        'Demo Credentials:',
+                        'Tài khoản demo:',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -164,11 +171,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'User: user / user123',
+                        'Người dùng: user / user123',
                         style: TextStyle(color: Colors.white70),
                       ),
                       Text(
-                        'Rescue: rescue / rescue123',
+                        'Đội cứu hộ: rescue / rescue123',
                         style: TextStyle(color: Colors.white70),
                       ),
                     ],

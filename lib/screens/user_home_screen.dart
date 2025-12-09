@@ -10,10 +10,35 @@ class UserHomeScreen extends StatefulWidget {
   State<UserHomeScreen> createState() => _UserHomeScreenState();
 }
 
-class _UserHomeScreenState extends State<UserHomeScreen> {
+class _UserHomeScreenState extends State<UserHomeScreen>
+    with TickerProviderStateMixin {
   int _currentIndex = 0;
   bool _isPressed = false;
   double _pressProgress = 0.0;
+
+  late AnimationController _waveController;
+  late Animation<double> _waveAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Wave animation controller
+    _waveController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat();
+
+    _waveAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _waveController, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _waveController.dispose();
+    super.dispose();
+  }
 
   void _onSOSPressed() {
     Navigator.push(
@@ -73,7 +98,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   Container(
                     width: 50,
                     height: 50,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.white24,
                       shape: BoxShape.circle,
                     ),
@@ -91,7 +116,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Welcome, ${user?['name'] ?? 'User'}',
+                          'Xin chào, ${user?['name'] ?? 'User'}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -113,7 +138,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   TextButton(
                     onPressed: _logout,
                     child: const Text(
-                      'Logout',
+                      'Đăng xuất',
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: 16,
@@ -125,7 +150,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               ),
             ),
 
-            // SOS Button
+            // SOS Button with Wave Effect
             Expanded(
               child: Center(
                 child: GestureDetector(
@@ -135,6 +160,37 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
+                      // Animated Wave Rings
+                      AnimatedBuilder(
+                        animation: _waveAnimation,
+                        builder: (context, child) {
+                          return Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // Wave 1
+                              _buildWaveRing(
+                                size: 280 + (_waveAnimation.value * 120),
+                                opacity: 0.6 * (1 - _waveAnimation.value),
+                              ),
+                              // Wave 2 (delayed)
+                              _buildWaveRing(
+                                size: 280 +
+                                    ((_waveAnimation.value + 0.33) % 1.0 * 120),
+                                opacity: 0.6 *
+                                    (1 - ((_waveAnimation.value + 0.33) % 1.0)),
+                              ),
+                              // Wave 3 (delayed more)
+                              _buildWaveRing(
+                                size: 280 +
+                                    ((_waveAnimation.value + 0.66) % 1.0 * 120),
+                                opacity: 0.6 *
+                                    (1 - ((_waveAnimation.value + 0.66) % 1.0)),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+
                       // Progress indicator
                       if (_isPressed)
                         SizedBox(
@@ -204,8 +260,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 children: [
                   Text(
                     _isPressed
-                        ? 'Hold for ${(3 - (_pressProgress * 3)).toStringAsFixed(1)}s...'
-                        : 'Press and hold for 3 seconds\nor tap to open form',
+                        ? 'Giữ thêm ${(3 - (_pressProgress * 3)).toStringAsFixed(1)}s...'
+                        : 'Giữ 3 giây hoặc chạm để gửi cứu hộ',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.6),
@@ -246,13 +302,27 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Home',
+              label: 'Trang chủ',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.history),
-              label: 'History',
+              label: 'Lịch sử',
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWaveRing({required double size, required double opacity}) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Colors.red.withOpacity(opacity),
+          width: 3,
         ),
       ),
     );

@@ -30,13 +30,13 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
   String _getStatusText(String status) {
     switch (status) {
       case 'resolved':
-        return 'Resolved';
+        return 'Đã xử lý';
       case 'in_progress':
-        return 'In Progress';
+        return 'Đang xử lý';
       case 'cancelled':
-        return 'Cancelled';
+        return 'Đã hủy';
       default:
-        return 'Pending';
+        return 'Chờ xử lý';
     }
   }
 
@@ -52,7 +52,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF1A0F0F),
       appBar: AppBar(
-        title: const Text('History'),
+        title: const Text('Lịch sử yêu cầu'),
         backgroundColor: const Color(0xFF2A1F1F),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -62,6 +62,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _refreshData,
+            tooltip: 'Làm mới',
           ),
         ],
       ),
@@ -77,7 +78,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No requests yet',
+                    'Chưa có yêu cầu nào',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.5),
                       fontSize: 18,
@@ -85,7 +86,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Tap the SOS button to create a request',
+                    'Nhấn nút SOS để tạo yêu cầu cứu hộ',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.3),
                       fontSize: 14,
@@ -103,7 +104,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
                 itemCount: requests.length,
                 itemBuilder: (context, index) {
                   final request = requests[index];
-                  final dateFormat = DateFormat('MMM dd, yyyy, hh:mm a');
+                  final dateFormat = DateFormat('dd/MM/yyyy, HH:mm', 'vi_VN');
 
                   return Container(
                     margin: const EdgeInsets.only(bottom: 12),
@@ -218,11 +219,11 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Home',
+              label: 'Trang chủ',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.history),
-              label: 'History',
+              label: 'Lịch sử',
             ),
           ],
         ),
